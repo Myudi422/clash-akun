@@ -1,6 +1,5 @@
 # SSL-Over-Websocket
 SSL Over Websocket
 
-note:
-*
+* note:
 wss://yourserver.com/your-websocket-location
