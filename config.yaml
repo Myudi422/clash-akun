@@ -1,0 +1,102 @@
+tproxy-port: 7893
+bind-address: "*"
+mode: rule
+allow-lan: true
+log-level: silent
+external-controller: 0.0.0.0:9090
+external-ui: yacd-gh-pages
+unified-delay: true
+ipv6: false
+dns:
+  enable: true
+  ipv6: false
+  listen: 0.0.0.0:1053
+  enhanced-mode: fake-ip
+  fake-ip-range: 28.0.0.0/8
+  use-hosts: true
+  nameserver:
+    - https://cloudflare-dns.com/dns-query
+# JANGAN DI EDIT
+
+proxies:
+  - {
+      name: IDC-PREMIUM,
+      server: zendesk4.grabtaxi.com,
+      port: 80,
+      type: vmess,
+      uuid: 830d4a8c-f52e-4a63-b799-b3ede72e4d14,
+      alterId: 0,
+      cipher: auto,
+      tls: false,
+      skip-cert-verify: true,
+      network: ws,
+      ws-opts: { path: /vmess/, headers: { Host: mx.ruangmozzart.my.id } },
+      udp: true,
+    }
+  - name: ID
+    server: id2-trojan.bonds.id
+    port: 443
+    type: trojan
+    password: 84a13810-b28c-11ec-88cc-1239d0255272
+    skip-cert-verify: true
+    sni: shopee.co.id
+    udp: true
+proxy-groups:
+  - name: AKUN
+    type: select
+    proxies:
+      - IDC-PREMIUM
+      - ID
+      - AKUN-ZOOM
+      - AKUN-GAME
+      - SOSMED
+      - STREAMING 
+
+  - name: AKUN-ZOOM
+    type: select
+    proxies: 
+      - IDC-PREMIUM
+
+  - name: AKUN-GAME
+    type: select
+    proxies: 
+      - IDC-PREMIUM
+
+  - name: SOSMED
+    type: select
+    proxies: 
+      - IDC-PREMIUM
+
+  - name: STREAMING
+    type: select
+    proxies: 
+      - IDC-PREMIUM  
+rule-providers:
+  reject:
+    type: http
+    behavior: domain
+    url: "https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/reject.txt"
+    path: ./premium/rules/reject.yaml
+    interval: 86400
+  game:
+    type: file
+    behavior: classical
+    path: ./premium/rules/game.yaml
+  sosmed:
+    type: file
+    behavior: classical
+    path: ./premium/rules/Sosmed.yaml
+  zoom:
+    type: file
+    behavior: classical
+    path: ./premium/rules/zoom.yaml
+  stream:
+    type: file
+    behavior: classical
+    path: ./premium/rules/stream.yaml
+rules:
+  - RULE-SET,zoom,AKUN-ZOOM
+  - RULE-SET,game,AKUN-GAME
+  - RULE-SET,sosmed,SOSMED
+  - RULE-SET,reject,REJECT
+  - Match,AKUN
